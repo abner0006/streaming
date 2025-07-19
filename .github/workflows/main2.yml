@@ -2,7 +2,7 @@ name: 'Update schedule2'
 
 on:
   schedule:
-    - cron: '0 22,10 * * *'
+    - cron: '0 03,15 * * *'
   workflow_dispatch:
     branches: [main]
 
@@ -61,6 +61,7 @@ jobs:
           pip3 install --user pipenv
           pipenv --python 3.12
           pipenv install --deploy
+          pipenv install pytz  
           if [[ ${{ env.OPEN_DRIVER }} == 'True' ]]; then
             pipenv install selenium
           fi
@@ -69,7 +70,7 @@ jobs:
         run: |
           export FINAL_FILE=output/result.txt  # 强制输出路径
           export CACHE_FILE=output/cache.pkl  
-          python main2.py  # 仅此处修改为 main2.py，其他保持不变
+          pipenv run python main2.py  # 运行 main2.py
 
       - name: Check script exit code
         if: always()
@@ -100,4 +101,4 @@ jobs:
           fi
 
           git commit -m "Auto update: $(date +'%Y-%m-%d %H:%M')"
-          git push origin main --force-with-lease
+          git push origin main --force  # 改为无条件强制推送
